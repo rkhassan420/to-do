@@ -1,0 +1,249 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Todo-App</title>
+    <style>
+      body {
+        padding: 0;
+        margin: 0;
+        height: 100%;
+        background-color: #8bc6ec;
+        background-image: linear-gradient(135deg, #8bc6ec 0%, #9599e2 100%);
+      }
+
+      .container {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        flex-direction: column;
+        height: 100vh;
+      }
+
+      .container h3 {
+        font-size: 35px;
+      }
+      .content {
+        background-color: #f5f5f5;
+        border: 2px solid #e5e4e2;
+        width: 25%;
+        height: 55%;
+        padding: 10px;
+        box-shadow: rgba(0, 0, 0, 0.35) 0px 5px 15px;
+      }
+
+      input[type="text"] {
+        padding: 15px;
+        width: 70%;
+        border: 1px solid #ccc;
+        margin-left: 17px;
+      }
+      button {
+        padding: 16px;
+        width: 15%;
+        cursor: pointer;
+        background-color: #246bce;
+        border: none;
+        color: white;
+      }
+
+      ol {
+        height: 77%;
+        overflow-y: auto;
+        list-style-type: none;
+        padding: 15px;
+      }
+
+      ol li {
+        padding: 13px;
+        border: 1px solid #ccc;
+        margin-bottom: 6px;
+        cursor: text;
+        position: relative;
+        font-family: "Courier New", Courier, monospace;
+        border-radius: 10px;
+      }
+
+      .delete-btn {
+        float: right;
+        background-color: red;
+        border: none;
+        color: white;
+        padding: 10px;
+        cursor: pointer;
+        position: absolute;
+        right: 10px;
+        top: 7px;
+        border-radius: 5px;
+      }
+
+      ol::-webkit-scrollbar {
+        width: 15px;
+      }
+
+      ol::-webkit-scrollbar-track {
+        background: #e5e4e2;
+      }
+
+      ol::-webkit-scrollbar-thumb {
+        background-color: #246bce;
+        border-radius: 10px;
+        border: 3px solid #e5e4e2;
+      }
+
+      /* Extra Small Devices (Portrait Phones) */
+      @media (max-width: 576px) {
+        .content {
+          width: 70%;
+        }
+
+        .delete-btn {
+          top: 4px;
+        }
+      }
+
+      /* Small Devices (Landscape Phones and Tablets) */
+      @media (min-width: 577px) and (max-width: 768px) {
+        .content {
+          width: 70%;
+        }
+
+        .delete-btn {
+          top: 4px;
+        }
+      }
+
+      /* Medium Devices (Tablets and Small Laptops) */
+      @media (min-width: 769px) and (max-width: 992px) {
+        .content {
+          width: 70%;
+          height: 60%;
+        }
+
+        .delete-btn {
+          top: 5px;
+        }
+
+        ol li {
+          padding: 15px;
+        }
+      }
+
+      /* Large Devices (Laptops and Desktops) */
+      @media (min-width: 993px) and (max-width: 1200px) {
+        .content {
+          width: 70%;
+          height: 60%;
+        }
+
+        ol li {
+          padding: 16px;
+        }
+      }
+
+      /* Extra Large Devices (Large Desktops) */
+      @media (min-width: 1201px) {
+        .content {
+          width: 75%;
+          height: 65%;
+        }
+
+        ol li {
+          padding: 17px;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <div class="container">
+      <h3
+        style="
+          text-align: center;
+          font-family: 'Courier New', Courier, monospace;
+        "
+      >
+        Todo-App
+      </h3>
+      <div class="content">
+        <input
+          type="text"
+          name="task"
+          placeholder="Write here..."
+          id="task"
+          class="task"
+          autocomplete="off"
+        />
+        <button class="btn" id="btn">ADD</button>
+        <ol class="litask"></ol>
+      </div>
+    </div>
+    <script>
+      var task = document.querySelector(".task");
+      var btn = document.querySelector("#btn");
+      var litask = document.querySelector(".litask");
+
+      task.addEventListener("keydown", function (event) {
+        if (event.key == "Enter") {
+          event.preventDefault();
+          btn.click();
+        }
+      });
+
+      // Function to add the task to local storage
+      const addTodoListToLocalStorage = (taskValue) => {
+        let tasks = JSON.parse(localStorage.getItem("notes")) || [];
+        tasks.push(taskValue);
+        localStorage.setItem("notes", JSON.stringify(tasks));
+      };
+
+      const createTaskElement = (taskValue) => {
+        const liElement = document.createElement("li");
+        liElement.innerHTML = taskValue;
+
+        // Create delete button
+        const deleteBtn = document.createElement("button");
+        deleteBtn.textContent = "Delete";
+        deleteBtn.className = "delete-btn";
+        deleteBtn.onclick = () => deleteTask(taskValue, liElement);
+
+        // Append delete button to list item
+        liElement.append(deleteBtn);
+        return liElement;
+      };
+
+      const addTodoList = (e) => {
+        if (task.value.trim() !== "") {
+          e.preventDefault();
+          const taskValue = task.value;
+          const liElement = createTaskElement(taskValue);
+          litask.append(liElement);
+          addTodoListToLocalStorage(taskValue);
+          task.value = "";
+        }
+      };
+
+      btn.addEventListener("click", (e) => {
+        addTodoList(e);
+      });
+
+      const loadTasks = () => {
+        let tasks = JSON.parse(localStorage.getItem("notes")) || [];
+        tasks.forEach((taskValue) => {
+          const liElement = createTaskElement(taskValue);
+          litask.append(liElement);
+        });
+      };
+
+      // Function to delete task from local storage and DOM
+      const deleteTask = (taskValue, liElement) => {
+        let tasks = JSON.parse(localStorage.getItem("notes")) || [];
+        tasks = tasks.filter((task) => task !== taskValue);
+        localStorage.setItem("notes", JSON.stringify(tasks));
+        liElement.remove(); // Remove from DOM
+      };
+
+      window.onload = loadTasks;
+    </script>
+  </body>
+</html>
