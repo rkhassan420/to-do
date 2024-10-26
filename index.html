@@ -92,10 +92,48 @@
         border: 3px solid #e5e4e2;
       }
 
-      /* Extra Small Devices (Portrait Phones) */
-      @media (max-width: 576px) {
+      @media (max-width: 399px) {
         .content {
-          width: 70%;
+          width: 85%;
+        }
+
+        button {
+          width: 20%;
+          padding: 14px;
+        }
+        input[type="text"] {
+          padding: 13px;
+          width: 60%;
+        }
+
+        .delete-btn {
+          top: 4px;
+
+          width: 19%;
+        }
+      }
+
+      @media (min-width: 400px) and (max-width: 499px) {
+        .content {
+          width: 85%;
+        }
+
+        input[type="text"] {
+          padding: 14px;
+          width: 65%;
+        }
+
+        .delete-btn {
+          top: 4px;
+
+          width: 18%;
+        }
+      }
+
+      /* Extra Small Devices (Portrait Phones) */
+      @media (min-width: 500px) and (max-width: 576px) {
+        .content {
+          width: 80%;
         }
 
         .delete-btn {
